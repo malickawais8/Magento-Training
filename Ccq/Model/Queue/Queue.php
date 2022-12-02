@@ -4,30 +4,28 @@ declare(strict_types=1);
 
 namespace RLTSquare\Ccq\Model\Queue;
 
-use RLTSquare\Ccq\Api\Data\QueueInterface;
-
-class Queue implements QueueInterface
+class Queue implements \RLTSquare\Ccq\Api\Data\QueueInterface
 {
 
     /**
-     * @var string
+     * @var mixed
      */
-    protected string $data;
+    protected mixed $data;
 
     /**
-     * @return string
+     * @inheriDoc
      */
-    public function getData(): string
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param string $data
-     * @return void
-     */
-    public function setData(string $data): void
+    public function setData(mixed $data)
     {
         $this->data = $data;
     }
+
+    /**
+     * @inheriDoc
+     */
+    public function getData(): mixed
+    {
+        return $this->data;
+    }
 }
+
