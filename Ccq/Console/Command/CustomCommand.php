@@ -78,7 +78,7 @@ class CustomCommand extends Command
         $exitCode = 0;
         $var1 = $input->getArgument(self::Var1);
         $var2 = $input->getArgument(self::Var2);
-        $this->queue->setData(".$var1.$var2.");
+        $this->queue->setData(['var1'=>$var1 ,'var2'=>$var2]);
         $this->publisher->publish('rltsquare_hello_world', $this->queue);
         $this->logger->info($var1 . $var2 . 'has been added');
         var_dump('Added message to queue');
