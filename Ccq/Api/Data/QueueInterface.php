@@ -6,14 +6,14 @@ namespace RLTSquare\Ccq\Api\Data;
 interface QueueInterface
 {
     /**
-     * @param string $data
-     * @return void
+     * @param  mixed $data
+     * @return $this
      */
-    public function setData(string $data): void;
+    public function setData(mixed $data);
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getData(): string;
-
+    public function getData(): mixed;
 }
+
