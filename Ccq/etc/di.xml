@@ -8,5 +8,4 @@
             </argument>
         </arguments>
     </type>
-    <preference for="RLTSquare\Ccq\Api\Data\QueueInterface" type="RLTSquare\Ccq\Model\Queue\Queue"/>
 </config>
