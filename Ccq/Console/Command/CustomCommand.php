@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace RLTSquare\Ccq\Console\Command;
 
+use Exception;
 use Magento\Framework\MessageQueue\PublisherInterface;
+use Magento\Framework\Serialize\SerializerInterface;
 use Psr\Log\LoggerInterface;
-use RLTSquare\Ccq\Api\Data\QueueInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,27 +18,34 @@ class CustomCommand extends Command
     const Var1 = 'var1';
     const Var2 = 'var2';
     /**
+     * @var SerializerInterface
+     */
+    protected SerializerInterface $serializer;
+    /**
      * @var PublisherInterface
      */
     protected PublisherInterface $publisher;
-    /**
-     * @var QueueInterface
-     */
-    protected QueueInterface $queue;
+
     /**
      * @var LoggerInterface
      */
     protected LoggerInterface $logger;
 
+    /**
+     * @param LoggerInterface $logger
+     * @param PublisherInterface $publisher
+     * @param SerializerInterface $serializer
+     * @param string|null $name
+     */
     public function __construct(
         LoggerInterface     $logger,
-        QueueInterface $queue,
         PublisherInterface  $publisher,
+        SerializerInterface $serializer,
         string              $name = null,
     ) {
         $this->publisher = $publisher;
-        $this->queue = $queue;
         $this->logger = $logger;
+        $this->serializer = $serializer;
         parent::__construct($name);
     }
 
@@ -78,10 +86,21 @@ class CustomCommand extends Command
         $exitCode = 0;
         $var1 = $input->getArgument(self::Var1);
         $var2 = $input->getArgument(self::Var2);
-        $this->queue->setData(['var1'=>$var1 ,'var2'=>$var2]);
-        $this->publisher->publish('rltsquare_hello_world', $this->queue);
-        $this->logger->info($var1 . $var2 . 'has been added');
-        var_dump('Added message to queue');
+        try {
+            if (!empty($var1) && !empty($var2)) {
+                $serialized_response = $this->serializer->serialize(["var1" => $var1, "var2" => $var2]);
+                $this->publisher->publish('rltsquare_hello_world', $serialized_response);
+                $this->logger->info($var1 . $var2 . 'has been added');
+                $output->writeln("$var1 $var2 added to rltsquare_hello_world_queue");
+            }
+        } catch (Exception $e) {
+            $output->writeln(
+                sprintf(
+                    '<error>%s</error>',
+                    $e->getMessage()
+                )
+            );
+        }
         return $exitCode;
     }
 }
