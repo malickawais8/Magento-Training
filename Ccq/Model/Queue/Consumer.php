@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace RLTSquare\Ccq\Model\Queue;
 
-
+use PHPUnit\Exception;
 use Psr\Log\LoggerInterface;
 
 class Consumer
 {
+
     /**
      * @var LoggerInterface
      */
@@ -22,10 +23,15 @@ class Consumer
     }
 
     /**
+     * @param $json_response
      * @return void
      */
-    public function processMessage(): void
+    public function processMessage($json_response): void
     {
-        $this->logger->info('hello world from rltsquare_hello_world queue job...');
+        try {
+            $this->logger->info($json_response . 'hello world from rltsquare_hello_world queue job...');
+        } catch (Exception $exception) {
+            $this->logger->critical($exception->getMessage());
+        }
     }
 }
